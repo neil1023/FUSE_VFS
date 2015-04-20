@@ -9,7 +9,6 @@
 #include <fuse/fuse.h>
 
 typedef struct a{
-	int isDir;  // 1 if it is dir, 0 if it is a file
 	int (*func)(int a, int b);
 	char *name; // name of file/directory
 } file_descr;
@@ -61,19 +60,26 @@ static void initFileDescriptions()
 		fileDescriptions[i] = (file_descr *) malloc(sizeof(file_descr *));
 	}
 
-	fileDescriptions[0]->isDir = 1;
 	fileDescriptions[0]->name = "factor";
 	fileDescriptions[0]->func = &factor;
 
-	fileDescriptions[1]->isDir = 1;
 	fileDescriptions[1]->name = "fib";
 	fileDescriptions[1]->func = &fib;
 
-	fileDescriptions[2]->isDir = 1;
 	fileDescriptions[2]->name = "add";
 	fileDescriptions[2]->func = &add;
-
 	
+	fileDescriptions[3]->name = "sub";
+	fileDescriptions[3]->func = &sub;
+
+	fileDescriptions[4]->name = "mul";
+	fileDescriptions[4]->func = &mul;
+
+	fileDescriptions[5]->name = "div1";
+	fileDescriptions[5]->func = &div1;
+
+	fileDescriptions[6]->name = "exp1";
+	fileDescriptions[6]->func = &exp1;
 }
 
 // FUSE function implementations.
