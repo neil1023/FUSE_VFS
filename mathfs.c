@@ -10,7 +10,7 @@
 
 typedef struct a{
 	int isDir;  // 1 if it is dir, 0 if it is a file
-	char *func; // Function to be called
+	int (*func)(int a, int b);
 	char *name; // name of file/directory
 } file_descr;
 
@@ -26,6 +26,34 @@ static const char *exp_path = "/exp";
 
 static const char *hello_str = "Hello World!\n";
 
+int factor(int a, int b){
+	return 0;
+}
+
+int fib(int a, int b){
+	return 0;
+}
+
+int add(int a, int b){
+	return 0;
+}
+
+int sub(int a, int b){
+	return 0;
+}
+
+int mul(int a, int b){
+	return 0;
+}
+
+int div1(int a, int b){
+	return 0;
+}
+
+int exp1(int a, int b){
+	return 0;
+}
+
 static void initFileDescriptions()
 {
 	int i = 0;
@@ -35,7 +63,16 @@ static void initFileDescriptions()
 
 	fileDescriptions[0]->isDir = 1;
 	fileDescriptions[0]->name = "factor";
-	fileDescriptions
+	fileDescriptions[0]->func = &factor;
+
+	fileDescriptions[1]->isDir = 1;
+	fileDescriptions[1]->name = "fib";
+	fileDescriptions[1]->func = &fib;
+
+	fileDescriptions[2]->isDir = 1;
+	fileDescriptions[2]->name = "add";
+	fileDescriptions[2]->func = &add;
+
 	
 }
 
@@ -63,6 +100,8 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 			  off_t offset, struct fuse_file_info *fi)
 {
+	printf("readdir(\"%s\"\n", path);
+
 	(void)offset;
 	(void)fi;
 
@@ -70,12 +109,14 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int mathfs_open(const char *path, struct fuse_file_info *fi)
 {
+	printf("mathfs_open(\"%s\"\n", path);
 
 }
 
 static int mathfs_read(const char *path, char *buf, size_t size, off_t offset,
 		       struct fuse_file_info *fi)
 {
+	printf("mathfs_read(\"%s\"\n", path);
 	(void)fi;
 
 }
