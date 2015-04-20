@@ -7,9 +7,10 @@
 #include <errno.h>
 #include <time.h>
 #include <fuse/fuse.h>
+#include <math.h>
 
 typedef struct a{
-	int (*func)(int a, int b);
+	double (*func)(double a, double b);
 	char *name; // name of file/directory
 } file_descr;
 
@@ -25,32 +26,32 @@ static const char *exp_path = "/exp";
 
 static const char *hello_str = "Hello World!\n";
 
-int factor(int a, int b){
+double factor(double a, double b){
 	return 0;
 }
 
-int fib(int a, int b){
+double fib(double a, double b){
 	return 0;
 }
 
-int add(int a, int b){
-	return 0;
+double add(double a, double b){
+	return a + b;
 }
 
-int sub(int a, int b){
-	return 0;
+double sub(double a, double b){
+	return a - b;
 }
 
-int mul(int a, int b){
-	return 0;
+double mul(double a, double b){
+	return a * b;
 }
 
-int div1(int a, int b){
-	return 0;
+double div1(double a, double b){
+	return a / b;
 }
 
-int exp1(int a, int b){
-	return 0;
+double exp1(double a, double b){
+	return pow(a, b);
 }
 
 static void initFileDescriptions()
