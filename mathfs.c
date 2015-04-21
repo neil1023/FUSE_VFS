@@ -90,6 +90,28 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	int res = 0;
 
 	memset(stbuf, 0, sizeof(struct stat));
+	char* token = strtok(path, "/");
+	char* cmd;
+	double a, b;
+	
+	if(token != NULL){
+		cmd = token;
+	} else {
+		return -ENOENT;
+	}
+
+	token = strtok(NULL, "/");
+	if(token != NULL){
+		a = (double) strtol(token);
+	} else {
+		return -ENOENT;
+	}
+	
+	token = strtok(NULL, "/");
+	if (token != NULL) {
+		b = (double) strtol(token);
+	}
+
 	if (strcmp(path, "/") == 0) {
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 2;
