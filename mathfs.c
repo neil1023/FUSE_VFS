@@ -185,10 +185,10 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	char *curr_dir;
 
 	for (; i < 7; i++) {
-		int b = strlen(fileDescriptions[i]->name) + 1;
+		int b = strlen(fileDescriptions[i]->name);
 		char a[b + 1];
 		strcpy(a, "/");
-		strcpy(a, fileDescriptions[i]->name);
+		strcat(a, fileDescriptions[i]->name);
 		if (strcmp(path, a) == 0) {
 			curr_dir = fileDescriptions[i]->name;
 			break;
@@ -206,13 +206,13 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 			int b = strlen(fileDescriptions[i]->name) + 1;
 			char a[b + 1];
 			strcpy(a, "/");
-			strcpy(a, fileDescriptions[i]->name);
+			strcat(a, fileDescriptions[i]->name);
 			filler(buf, a, NULL, 0);
 		}
 	} else {
 		filler(buf, ".", NULL, 0);
 		filler(buf, "..", NULL, 0);
-		filler(buf, "/doc", NULL, 0);
+		filler(buf, "doc", NULL, 0);
 	}
 
 	return 0;
