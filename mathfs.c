@@ -28,8 +28,9 @@ static const char *hello_str = "Hello World!\n";
 
 double factor(double a, double b)
 {
-	for (i = 1; i <= n; ++i) {
-		if (n % i == 0)
+	int i = 1;
+	for (; i <= a; ++i) {
+		if ((int) a % i == 0)
 			printf("%d ", i);
 	}
 	return 0;
@@ -40,7 +41,7 @@ double fib(double a, double b)
 	if (a == 1 || a == 2) {
 		return 1;
 	}
-	return fib(a - 1) + fib(a - 2);
+	return fib(a - 1, b) + fib(a - 2, b);
 }
 
 double add(double a, double b)
