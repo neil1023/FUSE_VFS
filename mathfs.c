@@ -9,9 +9,9 @@
 #include <fuse/fuse.h>
 #include <math.h>
 
-typedef struct a{
-	double (*func)(double a, double b);
-	char *name; // name of file/directory
+typedef struct a {
+	double (*func) (double a, double b);
+	char *name;		// name of file/directory
 } file_descr;
 
 file_descr *fileDescriptions[7];
@@ -26,39 +26,47 @@ static const char *exp_path = "/exp";
 
 static const char *hello_str = "Hello World!\n";
 
-double factor(double a, double b){
+double factor(double a, double b)
+{
 	return 0;
 }
 
-double fib(double a, double b){
+double fib(double a, double b)
+{
 	return 0;
 }
 
-double add(double a, double b){
+double add(double a, double b)
+{
 	return a + b;
 }
 
-double sub(double a, double b){
+double sub(double a, double b)
+{
 	return a - b;
 }
 
-double mul(double a, double b){
+double mul(double a, double b)
+{
 	return a * b;
 }
 
-double div1(double a, double b){
+double div1(double a, double b)
+{
 	return a / b;
 }
 
-double exp1(double a, double b){
+double exp1(double a, double b)
+{
 	return pow(a, b);
 }
 
 static void initFileDescriptions()
 {
 	int i = 0;
-	for(; i < 7; i++){
-		fileDescriptions[i] = (file_descr *) malloc(sizeof(file_descr *));
+	for (; i < 7; i++) {
+		fileDescriptions[i] =
+		    (file_descr *) malloc(sizeof(file_descr *));
 	}
 
 	fileDescriptions[0]->name = "factor";
@@ -69,7 +77,7 @@ static void initFileDescriptions()
 
 	fileDescriptions[2]->name = "add";
 	fileDescriptions[2]->func = &add;
-	
+
 	fileDescriptions[3]->name = "sub";
 	fileDescriptions[3]->func = &sub;
 
@@ -90,37 +98,63 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	int res = 0;
 
 	memset(stbuf, 0, sizeof(struct stat));
-	char* token = strtok(path, "/");
-	char* cmd;
-	double a, b;
-	
-	if(token != NULL){
-		cmd = token;
-	} else {
-		return -ENOENT;
-	}
+	char *new_path = malloc(sizeof(char) * strlen(path) + 1);
+	memcpy(new_path, path, strlen(path) + 1); 
+	char *token = strtok(new_path, "/");
+	char *cmd;
+	char **tokens;
+	int i = 0;
 
-	token = strtok(NULL, "/");
-	if(token != NULL){
-		a = (double) strtol(token);
-	} else {
-		return -ENOENT;
-	}
-	
-	token = strtok(NULL, "/");
-	if (token != NULL) {
-		b = (double) strtol(token);
+	while (token != NULL) {
+		tokens[i] = token;
+		token = strtok(NULL, "/");
+		i++;
 	}
 
 	if (strcmp(path, "/") == 0) {
 		stbuf->st_mode = S_IFDIR | 0755;
-		stbuf->st_nlink = 2;
-	} else if (strcmp(path, factor_path) == 0) {
-		stbuf->st_mode = S_IFREG | 0444;
-		stbuf->st_nlink = 1;
-		stbuf->st_size = strlen(hello_str);
-	} else
+		stbuf->st_nlink = 9;
+		return res;
+	}
+
+	int z = 0;
+	for (; z < 7; z++) {
+		if (strcmp(tokens[0], fileDescriptions[z]->name) == 0) {
+			cmd = tokens[0];
+			break;
+		}
+	}
+
+	if (cmd == NULL) {
 		res = -ENOENT;
+		return res;
+	}
+
+	if (tokens[1] != NULL) {
+		// do nothing
+	} else {
+		stbuf->st_mode = S_IFDIR | 0755;
+		stbuf->st_nlink = 2;	// . and ..
+		return res;
+	}
+
+	if (tokens[2] != NULL) {
+		// do nothing
+	} else if (strcmp(cmd, "factor") == 0) {
+		stbuf->st_mode = S_IFREG | 0444;
+		stbuf->st_nlink = 3;
+		stbuf->st_size = 1024;
+		return res;
+	} else {
+		stbuf->st_mode = S_IFDIR | 0755;
+		stbuf->st_nlink = 3;
+		return res;
+	}
+
+	if (tokens[3] != NULL) {
+		res = -ENOENT;
+		return res;
+	}
 
 	return res;
 
