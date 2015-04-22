@@ -140,7 +140,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 
 	if (tokens[2] != NULL) {
 		// do nothing
-	} else if (strcmp(cmd, "factor") == 0) {
+	} else if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
 		stbuf->st_mode = S_IFREG | 0444;
 		stbuf->st_nlink = 3;
 		stbuf->st_size = 1024;
