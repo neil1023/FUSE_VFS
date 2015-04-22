@@ -94,7 +94,7 @@ static void initFileDescriptions()
 // FUSE function implementations.
 static int mathfs_getattr(const char *path, struct stat *stbuf)
 {
-	printf("getattr(\"%s\"\n", path);
+	printf("getattr(\"%s\")\n", path);
 	int res = 0;
 
 	memset(stbuf, 0, sizeof(struct stat));
@@ -129,7 +129,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 		res = -ENOENT;
 		return res;
 	}
-
+	
 	if (tokens[1] != NULL) {
 		// do nothing
 	} else {
@@ -141,6 +141,11 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	if (tokens[2] != NULL) {
 		// do nothing
 	} else if (strcmp(cmd, "factor") == 0) {
+		stbuf->st_mode = S_IFREG | 0444;
+		stbuf->st_nlink = 3;
+		stbuf->st_size = 1024;
+		return res;
+	} else if (strcmp(tokens[1], "doc") == 0) {
 		stbuf->st_mode = S_IFREG | 0444;
 		stbuf->st_nlink = 3;
 		stbuf->st_size = 1024;
