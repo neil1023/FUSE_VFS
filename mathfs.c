@@ -30,7 +30,7 @@ double factor(double a, double b)
 {
 	int i = 1;
 	for (; i <= a; ++i) {
-		if ((int) a % i == 0)
+		if ((int)a % i == 0)
 			printf("%d ", i);
 	}
 	return 0;
@@ -111,12 +111,12 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	char *token = strtok(new_path, "/");
 	char *cmd;
 	char **tokens;
-	int i = 0;
+	int num_of_tokens = 0;
 
 	while (token != NULL) {
-		tokens[i] = token;
+		tokens[num_of_tokens] = token;
 		token = strtok(NULL, "/");
-		i++;
+		num_of_tokens++;
 	}
 
 	if (strcmp(path, "/") == 0) {
@@ -133,42 +133,40 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 		}
 	}
 
-	if (cmd == NULL) {
+	if (z == 7) {
 		res = -ENOENT;
 		return res;
 	}
 
-	if (tokens[1] != NULL) {
-		// do nothing
-	} else {
+	if (num_of_tokens == 1) {
 		stbuf->st_mode = S_IFDIR | 0755;
-		stbuf->st_nlink = 2;	// . and ..
+		stbuf->st_nlink = 3;	// . and .. and doc
 		return res;
 	}
 
-	if (tokens[2] != NULL) {
-		// do nothing
-	} else if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
-		stbuf->st_mode = S_IFREG | 0444;
-		stbuf->st_nlink = 3;
-		stbuf->st_size = 1024;
-		return res;
-	} else if (strcmp(tokens[1], "doc") == 0) {
-		stbuf->st_mode = S_IFREG | 0444;
-		stbuf->st_nlink = 3;
-		stbuf->st_size = 1024;
-		return res;
-	} else {
-		stbuf->st_mode = S_IFDIR | 0755;
-		stbuf->st_nlink = 3;
-		return res;
+	if (num_of_tokens == 2) {
+		if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
+			stbuf->st_mode = S_IFREG | 0444;
+			stbuf->st_nlink = 3;
+			stbuf->st_size = 1024;
+			return res;
+		} else if (strcmp(tokens[1], "doc") == 0) {
+			stbuf->st_mode = S_IFREG | 0444;
+			stbuf->st_nlink = 3;
+			stbuf->st_size = 1024;
+			return res;
+		} else {
+			stbuf->st_mode = S_IFDIR | 0755;
+			stbuf->st_nlink = 2;
+			return res;
+		}
 	}
 
-	if (tokens[3] != NULL) {
-		res = -ENOENT;
-		return res;
+	if (num_of_tokens == 3) {
+		// TODO
 	}
 
+	res = -ENOENT;
 	return res;
 
 }
@@ -177,13 +175,13 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 			  off_t offset, struct fuse_file_info *fi)
 {
 	printf("readdir(\"%s\")\n", path);
-	
+
 	(void)offset;
 	(void)fi;
 
 	int i = 0;
 	char *curr_dir;
-	
+
 	for (; i < 7; i++) {
 		int b = strlen(fileDescriptions[i]->name) + 1;
 		char a[b + 1];
@@ -195,7 +193,7 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		}
 	}
 
-	if (curr_dir == NULL && strcmp(path, "/") != 0) {
+	if (i == 7 && strcmp(path, "/") != 0) {
 		return -ENOENT;
 	}
 
@@ -212,7 +210,7 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	} else {
 		filler(buf, ".", NULL, 0);
 		filler(buf, "..", NULL, 0);
-		filler(buf, "/doc" + 1, NULL, 0);
+		filler(buf, "/doc", NULL, 0);
 	}
 
 	printf("REACHED END OF READDIR\n");
