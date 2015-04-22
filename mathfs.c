@@ -92,10 +92,10 @@ static void initFileDescriptions()
 	fileDescriptions[4]->name = "mul";
 	fileDescriptions[4]->func = &mul;
 
-	fileDescriptions[5]->name = "div1";
+	fileDescriptions[5]->name = "div";
 	fileDescriptions[5]->func = &div1;
 
-	fileDescriptions[6]->name = "exp1";
+	fileDescriptions[6]->name = "exp";
 	fileDescriptions[6]->func = &exp1;
 }
 
@@ -176,11 +176,48 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 			  off_t offset, struct fuse_file_info *fi)
 {
-	printf("readdir(\"%s\"\n", path);
-
+	printf("readdir(\"%s\")\n", path);
+	
 	(void)offset;
 	(void)fi;
 
+	int i = 0;
+	char *curr_dir;
+	
+	for (; i < 7; i++) {
+		int b = strlen(fileDescriptions[i]->name) + 1;
+		char a[b + 1];
+		strcpy(a, "/");
+		strcpy(a, fileDescriptions[i]->name);
+		if (strcmp(path, a) == 0) {
+			curr_dir = fileDescriptions[i]->name;
+			break;
+		}
+	}
+
+	if (curr_dir == NULL && strcmp(path, "/") != 0) {
+		return -ENOENT;
+	}
+
+	if (strcmp(path, "/") == 0) {
+		filler(buf, ".", NULL, 0);
+		filler(buf, "..", NULL, 0);
+		for (i = 0; i < 7; i++) {
+			int b = strlen(fileDescriptions[i]->name) + 1;
+			char a[b + 1];
+			strcpy(a, "/");
+			strcpy(a, fileDescriptions[i]->name);
+			filler(buf, a, NULL, 0);
+		}
+	} else {
+		filler(buf, ".", NULL, 0);
+		filler(buf, "..", NULL, 0);
+		filler(buf, "/doc" + 1, NULL, 0);
+	}
+
+	printf("REACHED END OF READDIR\n");
+
+	return 0;
 }
 
 static int mathfs_open(const char *path, struct fuse_file_info *fi)
@@ -206,5 +243,6 @@ static struct fuse_operations mathfs_oper = {
 
 int main(int argc, char **argv)
 {
+	initFileDescriptions();
 	return fuse_main(argc, argv, &mathfs_oper, NULL);
 }
