@@ -43,7 +43,7 @@ char *factor(double a, double b)
 
 char *fib(double a, double b)
 {
-	double *fib_nums = (double *)calloc((int)a, sizeof(double)); 
+	int *fib_nums = (int *)calloc((int)a, sizeof(int)); 
 
 	fib_nums[0] = 1; 
 	fib_nums[1] = 1; 
@@ -54,7 +54,17 @@ char *fib(double a, double b)
 		fib_nums[i] = fib_nums[i-1] + fib_nums[i-2]; 
 	}
 
-	return NULL; 
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	char *ptr = buf; 
+
+	for(i=0; i<a; i++){
+		ptr += sprintf(ptr, "%d, ", fib_nums[i]); 
+	}
+
+	ptr -= 2; 
+	*ptr = '\0';
+
+	return buf; 
 }
 
 char *add(double a, double b)
