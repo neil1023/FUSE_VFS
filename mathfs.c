@@ -28,12 +28,19 @@ static const char *hello_str = "Hello World!\n";
 
 double factor(double a, double b)
 {
+	for (i = 1; i <= n; ++i) {
+		if (n % i == 0)
+			printf("%d ", i);
+	}
 	return 0;
 }
 
 double fib(double a, double b)
 {
-	return 0;
+	if (a == 1 || a == 2) {
+		return 1;
+	}
+	return fib(a - 1) + fib(a - 2);
 }
 
 double add(double a, double b)
@@ -99,7 +106,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 
 	memset(stbuf, 0, sizeof(struct stat));
 	char *new_path = malloc(sizeof(char) * strlen(path) + 1);
-	memcpy(new_path, path, strlen(path) + 1); 
+	memcpy(new_path, path, strlen(path) + 1);
 	char *token = strtok(new_path, "/");
 	char *cmd;
 	char **tokens;
@@ -129,7 +136,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 		res = -ENOENT;
 		return res;
 	}
-	
+
 	if (tokens[1] != NULL) {
 		// do nothing
 	} else {
