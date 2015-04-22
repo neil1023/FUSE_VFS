@@ -220,7 +220,67 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int mathfs_open(const char *path, struct fuse_file_info *fi)
 {
+	
 	printf("mathfs_open(\"%s\"\n", path);
+	
+
+	char *new_path = malloc(sizeof(char) * strlen(path) + 1);
+	memcpy(new_path, path, strlen(path) + 1);
+	char *token = strtok(new_path, "/");
+	char *cmd;
+	char **tokens;
+	int num_of_tokens = 0;
+
+	while (token != NULL) {
+		tokens[num_of_tokens] = token;
+		token = strtok(NULL, "/");
+		num_of_tokens++;
+	}
+
+	if (strcmp(path, "/") == 0) {
+		return -ENOENT;
+	}
+
+	int z = 0;
+	for (; z < 7; z++) {
+		if (strcmp(tokens[0], fileDescriptions[z]->name) == 0) {
+			cmd = tokens[0];
+			break;
+		}
+	}
+
+	if (z == 7) {
+		return -ENOENT;
+	}
+
+	if (num_of_tokens == 1) {
+		return -ENOENT;
+	}
+
+	if (num_of_tokens == 2) {
+		if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
+			if((fi->flags & 3) != O_RDONLY){
+				return -EACCES;
+			}
+			return 0;
+		} else if (strcmp(tokens[1], "doc") == 0) {	
+			if((fi->flags & 3) != O_RDONLY){
+				return -EACCES;
+			}
+			return 0;
+		} else {
+			return -EACCES;
+		}
+	}
+
+	if (num_of_tokens == 3) {
+		if((fi->flags & 3) != O_RDONLY){
+			return -EACCES;
+		}
+		return 0;
+	}
+
+	return -ENOENT;
 
 }
 
