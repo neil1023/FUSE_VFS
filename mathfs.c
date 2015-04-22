@@ -10,7 +10,7 @@
 #include <math.h>
 
 typedef struct a {
-	double (*func) (double a, double b);
+	char *(*func) (double a, double b);
 	char *name;		// name of file/directory
 } file_descr;
 
@@ -26,47 +26,75 @@ static const char *exp_path = "/exp";
 
 static const char *hello_str = "Hello World!\n";
 
-double factor(double a, double b)
+char *factor(double a, double b)
 {
-	int i = 1;
-	for (; i <= a; ++i) {
-		if ((int)a % i == 0)
-			printf("%d ", i);
+	struct linkedList{
+		int value; 
+		struct linkedList *next;
+		struct linkedList *prev; 
+	};
+
+	typedef struct linkedList linkedList_t; 
+
+	
+	return NULL;
+
+}
+
+char *fib(double a, double b)
+{
+	int *fib_nums = (int *)calloc((int)a, sizeof(int)); 
+
+	fib_nums[0] = 1; 
+	fib_nums[1] = 1; 
+	
+
+	int i;
+	for(i=2; i<a; i++){
+		fib_nums[i] = fib_nums[i-1] + fib_nums[i-2]; 
 	}
-	return 0;
-}
 
-double fib(double a, double b)
-{
-	if (a == 1 || a == 2) {
-		return 1;
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	char *ptr = buf; 
+
+	for(i=0; i<a; i++){
+		ptr += sprintf(ptr, "%d, ", fib_nums[i]); 
 	}
-	return fib(a - 1, b) + fib(a - 2, b);
+
+	ptr -= 2; 
+	*ptr = '\0';
+
+	return buf; 
 }
 
-double add(double a, double b)
+char *add(double a, double b)
 {
-	return a + b;
+//	return a + b;
+	return NULL;
 }
 
-double sub(double a, double b)
+char *sub(double a, double b)
 {
-	return a - b;
+//	return a - b;
+	return NULL;
 }
 
-double mul(double a, double b)
+char *mul(double a, double b)
 {
-	return a * b;
+	//return a * b;
+	return NULL;
 }
 
-double div1(double a, double b)
+char *div1(double a, double b)
 {
-	return a / b;
+	//return a / b;
+	return NULL;
 }
 
-double exp1(double a, double b)
+char *exp1(double a, double b)
 {
-	return pow(a, b);
+	//return pow(a, b);
+	return NULL;
 }
 
 static void initFileDescriptions()
