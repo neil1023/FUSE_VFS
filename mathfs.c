@@ -163,7 +163,9 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	}
 
 	if (num_of_tokens == 3) {
-		// TODO
+		stbuf->st_mode = S_IFREG | 0444;
+		stbuf->st_nlink = 3;
+		stbuf->st_size = 1024;
 	}
 
 	res = -ENOENT;
@@ -212,8 +214,6 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		filler(buf, "..", NULL, 0);
 		filler(buf, "/doc", NULL, 0);
 	}
-
-	printf("REACHED END OF READDIR\n");
 
 	return 0;
 }
