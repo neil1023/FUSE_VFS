@@ -194,23 +194,23 @@ static void initFileDescriptions()
 
 	fileDescriptions[2]->name = "add";
 	fileDescriptions[2]->func = &add;
-	fileDescriptions[2]->description = "";
+	fileDescriptions[2]->description = "Given the path add/x/y, it will output the sum of x and y.";
 
 	fileDescriptions[3]->name = "sub";
 	fileDescriptions[3]->func = &sub;
-	fileDescriptions[3]->description = "";
+	fileDescriptions[3]->description = "Given the path sub/x/y, it will output the difference of x and y.";
 	
 	fileDescriptions[4]->name = "mul";
 	fileDescriptions[4]->func = &mul;
-	fileDescriptions[4]->description = "";
+	fileDescriptions[4]->description = "Given the path mul/x/y, it will output the product of x and y.";
 	
 	fileDescriptions[5]->name = "div";
 	fileDescriptions[5]->func = &div1;
-	fileDescriptions[5]->description = "";
+	fileDescriptions[5]->description = "Given the path div/x/y, it will output the quotent of x and y.";
 
 	fileDescriptions[6]->name = "exp";
 	fileDescriptions[6]->func = &exp1;
-	fileDescriptions[6]->description = "";
+	fileDescriptions[6]->description = "Given the path exp/x/y, it will output x raised to the yth power.";
 }
 
 // FUSE function implementations.
