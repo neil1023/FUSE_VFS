@@ -1,0 +1,28 @@
+Group Members: Carmine Iannaccone, Neil Patel, Megan Murray
+
+Design:
+
+Our program utilizes the FUSE API by implementing getattr, readdir, read and open. 
+
+In "getattr", we parse through the given path to find out what file the user is performing a given command on. Once we determine if
+the last file in the path is a directory or a regular file, we then assign attributes to it. These attributes include the permissions, 
+the number of links and (if it is a regular file) the size.
+
+The "readdir" function parses through path in the same way and upon determining what the directory specified is, it calls the
+filler funtion as many times as there are links within the directory. The filler function stores the specifed link names
+within a buffer that outputs to the terminal.
+
+"Read" simply parses through in the same way and dtermines if the path is pointing to a regular file. If it is, it then checks the
+permissions of the file to see if it has the right to read it. If the file is both not a directory and has read permissions for
+the given user, we return a success.
+
+Lastly, "open" determines the path (via parser). Upon confierming that it's a
+regular file. We then identify if the file is a doc. If it is, we store the
+contents of the doc within memory via the buffer provided to us. If it is not
+a doc, then we take the two (or one) number within the path and call the
+appropriate funtion via a pointer that points within a struct we've created.
+The buffer then outputs it's contents to the terminal.
+
+Test Cases:
+
+
