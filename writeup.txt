@@ -25,4 +25,66 @@ The buffer then outputs it's contents to the terminal.
 
 Test Cases:
 
+1. ls math/
+
+add  div  exp  factor  fib  mul  sub
+
+2. ls -l math/
+
+total 0
+drwxr-xr-x 3 root root 0 oec 31  1969 add
+drwxr-xr-x 3 root root 0 Dec 31  1969 div
+drwxr-xr-x 3 root root 0 Dec 31  1969 exp
+drwxr-xr-x 3 root root 0 Dec 31  1969 factor
+drwxr-xr-x 3 root root 0 Dec 31  1969 fib
+drwxr-xr-x 3 root root 0 Dec 31  1969 mul
+drwxr-xr-x 3 root root 0 Dec 31  1969 sub
+
+3. ls -l math/add/
+
+-r--r--r-- 3 root root 1024 Dec 31  1969 doc
+
+4. cat math/add/doc
+
+Given the path add/x/y, it will output the sum of x and y.
+
+5. cat math/add/2/2
+
+4.000000
+
+6. cat math/add/2/2.5
+
+4.500000
+
+7. cat math/sub/5/5
+
+0.000000
+
+8. cat math/div/10/0
+
+Divide by 0 error.
+
+9. cat math/fib/5
+
+1
+1
+2
+3
+5
+
+10. cat math/factor/315
+
+3
+3
+5
+7
+
+11. cat math/exp/2/5
+
+32.000000
+
+12. cat math/exp/2/-5
+
+0.031250
+
 
