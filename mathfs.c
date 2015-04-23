@@ -141,32 +141,40 @@ char *fib(double a, double b)
 
 char *add(double a, double b)
 {
-//	return a + b;
-	return NULL;
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	sprintf(buf, "%f", a + b);
+	return buf; 
 }
 
 char *sub(double a, double b)
 {
-//	return a - b;
-	return NULL;
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	sprintf(buf, "%f", a - b);
+	return buf; 
 }
 
 char *mul(double a, double b)
 {
-	//return a * b;
-	return NULL;
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	sprintf(buf, "%f", a * b);
+	return buf; 
 }
 
 char *div1(double a, double b)
 {
-	//return a / b;
-	return NULL;
+	if(b == 0){
+		return "Divide by 0 error."; 
+	}
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	sprintf(buf, "%f", a / b);
+	return buf; 
 }
 
 char *exp1(double a, double b)
 {
-	//return pow(a, b);
-	return NULL;
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	sprintf(buf, "%f", pow(a, b));
+	return buf; 
 }
 
 static void initFileDescriptions()
