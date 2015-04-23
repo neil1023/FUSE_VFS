@@ -12,6 +12,7 @@
 typedef struct a {
 	char *(*func) (double a, double b);
 	char *name;		// name of file/directory
+	char *description;
 } file_descr;
 
 file_descr *fileDescriptions[7];
@@ -185,24 +186,31 @@ static void initFileDescriptions()
 
 	fileDescriptions[0]->name = "factor";
 	fileDescriptions[0]->func = &factor;
+	fileDescriptions[0]->description = "Given a number, it will print out the prime factors";
 
 	fileDescriptions[1]->name = "fib";
 	fileDescriptions[1]->func = &fib;
+	fileDescriptions[1]->description = "Will provide the first N fibonacci numbers leading to the number provided";
 
 	fileDescriptions[2]->name = "add";
 	fileDescriptions[2]->func = &add;
+	fileDescriptions[2]->description = "";
 
 	fileDescriptions[3]->name = "sub";
 	fileDescriptions[3]->func = &sub;
-
+	fileDescriptions[3]->description = "";
+	
 	fileDescriptions[4]->name = "mul";
 	fileDescriptions[4]->func = &mul;
-
+	fileDescriptions[4]->description = "";
+	
 	fileDescriptions[5]->name = "div";
 	fileDescriptions[5]->func = &div1;
+	fileDescriptions[5]->description = "";
 
 	fileDescriptions[6]->name = "exp";
 	fileDescriptions[6]->func = &exp1;
+	fileDescriptions[6]->description = "";
 }
 
 // FUSE function implementations.
@@ -466,7 +474,7 @@ static int mathfs_read(const char *path, char *buf, size_t size, off_t offset,
 				if (offset + size > len)
 					size = len - offset;
 				memcpy(buf,
-				       fileDescriptions[z]->func(a, b) + offset,
+				       fileDescriptions[z]->description + offset,
 				       size);
 			} else {
 				size = 0;
