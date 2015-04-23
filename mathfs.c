@@ -28,17 +28,89 @@ static const char *hello_str = "Hello World!\n";
 
 char *factor(double a, double b)
 {
-	struct linkedList{
+	struct linkedlist{
 		int value; 
-		struct linkedList *next;
-		struct linkedList *prev; 
+		struct linkedlist *next;
+		struct linkedlist *prev; 
 	};
 
-	typedef struct linkedList linkedList_t; 
-
+	typedef struct linkedlist linkedlist_t; 
 	
-	return NULL;
+	
+	linkedlist_t *factors = (linkedlist_t *)calloc(1, sizeof(linkedlist_t)); 
+	factors->next = NULL; 
+	factors->prev = NULL; 
 
+	int first = 0; 
+
+	linkedlist_t *ptr = factors; 
+
+	int number = (int)a; 
+	
+	while(number % 2 == 0){
+		if(first == 0){
+			ptr->value = 2; 
+			first = 1; 
+		}
+		else{
+			ptr->next = (linkedlist_t *)calloc(1, sizeof(linkedlist_t)); 
+			ptr->next->prev = ptr; 
+			ptr = ptr->next;
+			ptr->value = 2;
+			ptr->next = NULL;
+		}
+
+		number = number / 2;
+	}
+
+	int possible_factor; 
+
+	for(possible_factor = 3; possible_factor < sqrt(number); possible_factor += 2){
+	
+		while(number % possible_factor == 0){
+			if(first == 0){
+				ptr->value = possible_factor; 
+				first = 1; 
+			}
+			else{
+				ptr->next = (linkedlist_t *)calloc(1, sizeof(linkedlist_t)); 
+				ptr->next->prev = ptr; 
+				ptr = ptr->next; 
+				ptr->value = possible_factor; 
+				ptr->next = NULL; 
+			}
+			
+			number = number / possible_factor; 
+		}
+
+	}
+
+	if(number > 2){ 
+		if(first == 0){
+			ptr->value = number; 
+			first = 1; 
+		}
+		else{
+			ptr->next = (linkedlist_t *)calloc(1, sizeof(linkedlist_t)); 
+			ptr->next->prev = ptr; 
+			ptr = ptr->next; 
+			ptr->value = number; 
+			ptr->next = NULL;
+		}
+	} 
+
+
+	char *buf = (char *)calloc(1024, sizeof(char)); 
+	char *c_ptr = buf; 
+	ptr = factors; 
+	for(; ptr != NULL; ptr = ptr->next){
+		c_ptr += sprintf(c_ptr, "%d, ", ptr->value); 	
+	}
+
+	c_ptr -= 2; 
+	*c_ptr = '\0'; 
+
+	return buf; 
 }
 
 char *fib(double a, double b)
