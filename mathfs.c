@@ -104,12 +104,9 @@ char *factor(double a, double b)
 	char *c_ptr = buf; 
 	ptr = factors; 
 	for(; ptr != NULL; ptr = ptr->next){
-		c_ptr += sprintf(c_ptr, "%d, ", ptr->value); 	
+		c_ptr += sprintf(c_ptr, "%d\n", ptr->value); 	
 	}
 	
-	c_ptr -= 2; 
-	*c_ptr = '\0'; 
-
 	return buf; 
 }
 
@@ -129,11 +126,8 @@ char *fib(double a, double b)
 	char *ptr = buf;
 
 	for (i = 0; i < a; i++) {
-		ptr += sprintf(ptr, "%d, ", fib_nums[i]);
+		ptr += sprintf(ptr, "%d\n", fib_nums[i]);
 	}
-
-	ptr -= 2;
-	*ptr = '\0';
 
 	return buf;
 }
@@ -141,38 +135,38 @@ char *fib(double a, double b)
 char *add(double a, double b)
 {
 	char *buf = (char *)calloc(1024, sizeof(char)); 
-	sprintf(buf, "%f", a + b);
+	sprintf(buf, "%f\n", a + b);
 	return buf; 
 }
 
 char *sub(double a, double b)
 {
 	char *buf = (char *)calloc(1024, sizeof(char)); 
-	sprintf(buf, "%f", a - b);
+	sprintf(buf, "%f\n", a - b);
 	return buf; 
 }
 
 char *mul(double a, double b)
 {
 	char *buf = (char *)calloc(1024, sizeof(char)); 
-	sprintf(buf, "%f", a * b);
+	sprintf(buf, "%f\n", a * b);
 	return buf; 
 }
 
 char *div1(double a, double b)
 {
 	if(b == 0){
-		return "Divide by 0 error."; 
+		return "Divide by 0 error.\n"; 
 	}
 	char *buf = (char *)calloc(1024, sizeof(char)); 
-	sprintf(buf, "%f", a / b);
+	sprintf(buf, "%f\n", a / b);
 	return buf; 
 }
 
 char *exp1(double a, double b)
 {
 	char *buf = (char *)calloc(1024, sizeof(char)); 
-	sprintf(buf, "%f", pow(a, b));
+	sprintf(buf, "%f\n", pow(a, b));
 	return buf; 
 }
 
