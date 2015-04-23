@@ -216,7 +216,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	memcpy(new_path, path, strlen(path) + 1);
 	char *token = strtok(new_path, "/");
 	char *cmd;
-	char **tokens;
+	char **tokens = (char **) calloc(1024, sizeof(char *));
 	int num_of_tokens = 0;
 
 	while (token != NULL) {
@@ -245,6 +245,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 	}
 
 	if (num_of_tokens == 1) {
+		printf("NUM OF TOKENS IS 1\n");
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 3;	// . and .. and doc
 		return res;
@@ -257,6 +258,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 			stbuf->st_size = 1024;
 			return res;
 		} else if (strcmp(tokens[1], "doc") == 0) {
+			printf("IDENTIFIED DOC\n");
 			stbuf->st_mode = S_IFREG | 0444;
 			stbuf->st_nlink = 3;
 			stbuf->st_size = 1024;
@@ -272,6 +274,7 @@ static int mathfs_getattr(const char *path, struct stat *stbuf)
 		stbuf->st_mode = S_IFREG | 0444;
 		stbuf->st_nlink = 3;
 		stbuf->st_size = 1024;
+		return res;
 	}
 
 	res = -ENOENT;
@@ -327,20 +330,26 @@ static int mathfs_open(const char *path, struct fuse_file_info *fi)
 	char *new_path = malloc(sizeof(char) * strlen(path) + 1);
 	memcpy(new_path, path, strlen(path) + 1);
 	char *token = strtok(new_path, "/");
+	printf("FIRST TOKEN: %s\n", token);
 	char *cmd;
-	char **tokens;
+	char **tokens = (char **) calloc(1024, sizeof(char *));
 	int num_of_tokens = 0;
-
+	
+	printf("milestone 1\n");
 	while (token != NULL) {
+		printf("check 1\n");
 		tokens[num_of_tokens] = token;
+		printf("check 2\n");
 		token = strtok(NULL, "/");
+		printf("check 3\n");
 		num_of_tokens++;
 	}
-
+	printf("milestone 2\n");
 	if (strcmp(path, "/") == 0) {
 		return -ENOENT;
 	}
 
+	printf("milestone 3\n");
 	int z = 0;
 	for (; z < 7; z++) {
 		if (strcmp(tokens[0], fileDescriptions[z]->name) == 0) {
@@ -349,14 +358,17 @@ static int mathfs_open(const char *path, struct fuse_file_info *fi)
 		}
 	}
 
+	printf("milestone 4\n");
 	if (z == 7) {
 		return -ENOENT;
 	}
 
+	printf("MILESTONE #1\n");
 	if (num_of_tokens == 1) {
 		return -ENOENT;
 	}
 
+	printf("MILESTONE #2\n");
 	if (num_of_tokens == 2) {
 		if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
 			if ((fi->flags & 3) != O_RDONLY) {
@@ -373,6 +385,7 @@ static int mathfs_open(const char *path, struct fuse_file_info *fi)
 		}
 	}
 
+	printf("MILESTONE #3\n");
 	if (num_of_tokens == 3) {
 		if ((fi->flags & 3) != O_RDONLY) {
 			return -EACCES;
@@ -395,7 +408,7 @@ static int mathfs_read(const char *path, char *buf, size_t size, off_t offset,
 	memcpy(new_path, path, strlen(path) + 1);
 	char *token = strtok(new_path, "/");
 	char *cmd;
-	char **tokens;
+	char **tokens = (char **) calloc(1024, sizeof(char *));
 	int num_of_tokens = 0;
 
 	while (token != NULL) {
@@ -448,10 +461,6 @@ static int mathfs_read(const char *path, char *buf, size_t size, off_t offset,
 			if ((fi->flags & 3) != O_RDONLY) {
 				return -ENOENT;
 			}
-			double a, b;
-			a = strtod(tokens[1], NULL);
-			b = strtod(tokens[2], NULL);
-			len = strlen(fileDescriptions[z]->func(a, b));
 
 			if (offset < len) {
 				if (offset + size > len)
