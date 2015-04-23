@@ -36,7 +36,6 @@ char *factor(double a, double b)
 
 	typedef struct linkedlist linkedlist_t; 
 	
-	
 	linkedlist_t *factors = (linkedlist_t *)calloc(1, sizeof(linkedlist_t)); 
 	factors->next = NULL; 
 	factors->prev = NULL; 
@@ -106,7 +105,7 @@ char *factor(double a, double b)
 	for(; ptr != NULL; ptr = ptr->next){
 		c_ptr += sprintf(c_ptr, "%d, ", ptr->value); 	
 	}
-
+	
 	c_ptr -= 2; 
 	*c_ptr = '\0'; 
 
@@ -115,28 +114,27 @@ char *factor(double a, double b)
 
 char *fib(double a, double b)
 {
-	int *fib_nums = (int *)calloc((int)a, sizeof(int)); 
+	int *fib_nums = (int *)calloc((int)a, sizeof(int));
 
-	fib_nums[0] = 1; 
-	fib_nums[1] = 1; 
-	
+	fib_nums[0] = 1;
+	fib_nums[1] = 1;
 
 	int i;
-	for(i=2; i<a; i++){
-		fib_nums[i] = fib_nums[i-1] + fib_nums[i-2]; 
+	for (i = 2; i < a; i++) {
+		fib_nums[i] = fib_nums[i - 1] + fib_nums[i - 2];
 	}
 
-	char *buf = (char *)calloc(1024, sizeof(char)); 
-	char *ptr = buf; 
+	char *buf = (char *)calloc(1024, sizeof(char));
+	char *ptr = buf;
 
-	for(i=0; i<a; i++){
-		ptr += sprintf(ptr, "%d, ", fib_nums[i]); 
+	for (i = 0; i < a; i++) {
+		ptr += sprintf(ptr, "%d, ", fib_nums[i]);
 	}
 
-	ptr -= 2; 
+	ptr -= 2;
 	*ptr = '\0';
 
-	return buf; 
+	return buf;
 }
 
 char *add(double a, double b)
@@ -311,11 +309,7 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		filler(buf, ".", NULL, 0);
 		filler(buf, "..", NULL, 0);
 		for (i = 0; i < 7; i++) {
-			int b = strlen(fileDescriptions[i]->name) + 1;
-			char a[b + 1];
-			strcpy(a, "/");
-			strcat(a, fileDescriptions[i]->name);
-			filler(buf, a, NULL, 0);
+			filler(buf, fileDescriptions[i]->name, NULL, 0);
 		}
 	} else {
 		filler(buf, ".", NULL, 0);
@@ -328,9 +322,7 @@ static int mathfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int mathfs_open(const char *path, struct fuse_file_info *fi)
 {
-	
-	printf("mathfs_open(\"%s\"\n", path);
-	
+	printf("mathfs_open(\"%s\")\n", path);
 
 	char *new_path = malloc(sizeof(char) * strlen(path) + 1);
 	memcpy(new_path, path, strlen(path) + 1);
@@ -367,12 +359,12 @@ static int mathfs_open(const char *path, struct fuse_file_info *fi)
 
 	if (num_of_tokens == 2) {
 		if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
-			if((fi->flags & 3) != O_RDONLY){
+			if ((fi->flags & 3) != O_RDONLY) {
 				return -EACCES;
 			}
 			return 0;
-		} else if (strcmp(tokens[1], "doc") == 0) {	
-			if((fi->flags & 3) != O_RDONLY){
+		} else if (strcmp(tokens[1], "doc") == 0) {
+			if ((fi->flags & 3) != O_RDONLY) {
 				return -EACCES;
 			}
 			return 0;
@@ -382,7 +374,7 @@ static int mathfs_open(const char *path, struct fuse_file_info *fi)
 	}
 
 	if (num_of_tokens == 3) {
-		if((fi->flags & 3) != O_RDONLY){
+		if ((fi->flags & 3) != O_RDONLY) {
 			return -EACCES;
 		}
 		return 0;
@@ -396,7 +388,110 @@ static int mathfs_read(const char *path, char *buf, size_t size, off_t offset,
 		       struct fuse_file_info *fi)
 {
 	printf("mathfs_read(\"%s\"\n", path);
+	size_t len;
 	(void)fi;
+
+	char *new_path = malloc(sizeof(char) * strlen(path) + 1);
+	memcpy(new_path, path, strlen(path) + 1);
+	char *token = strtok(new_path, "/");
+	char *cmd;
+	char **tokens;
+	int num_of_tokens = 0;
+
+	while (token != NULL) {
+		tokens[num_of_tokens] = token;
+		token = strtok(NULL, "/");
+		num_of_tokens++;
+	}
+
+	if (strcmp(path, "/") == 0) {
+		return -ENOENT;
+	}
+
+	int z = 0;
+	for (; z < 7; z++) {
+		if (strcmp(tokens[0], fileDescriptions[z]->name) == 0) {
+			cmd = tokens[0];
+			break;
+		}
+	}
+
+	if (z == 7) {
+		return -ENOENT;
+	}
+
+	if (num_of_tokens == 1) {
+		return -ENOENT;
+	}
+
+	if (num_of_tokens == 2) {
+		if (strcmp(cmd, "factor") == 0 || strcmp(cmd, "fib") == 0) {
+			if ((fi->flags & 3) != O_RDONLY) {
+				return -ENOENT;
+			}
+			double a, b;
+			a = strtod(tokens[1], NULL);
+			len = strlen(fileDescriptions[z]->func(a, b));
+
+			if (offset < len) {
+				if (offset + size > len)
+					size = len - offset;
+				memcpy(buf,
+				       fileDescriptions[z]->func(a, b) + offset,
+				       size);
+			} else {
+				size = 0;
+			}
+
+			return size;
+		} else if (strcmp(tokens[1], "doc") == 0) {
+			if ((fi->flags & 3) != O_RDONLY) {
+				return -ENOENT;
+			}
+			double a, b;
+			a = strtod(tokens[1], NULL);
+			b = strtod(tokens[2], NULL);
+			len = strlen(fileDescriptions[z]->func(a, b));
+
+			if (offset < len) {
+				if (offset + size > len)
+					size = len - offset;
+				memcpy(buf,
+				       fileDescriptions[z]->func(a, b) + offset,
+				       size);
+			} else {
+				size = 0;
+			}
+
+			return size;
+		} else {
+			return -ENOENT;
+		}
+	}
+
+	if (num_of_tokens == 3) {
+		if ((fi->flags & 3) != O_RDONLY) {
+			return -ENOENT;
+		}
+
+		double a, b;
+		a = strtod(tokens[1], NULL);
+		b = strtod(tokens[2], NULL);
+		len = strlen(fileDescriptions[z]->func(a, b));
+
+		if (offset < len) {
+			if (offset + size > len)
+				size = len - offset;
+			memcpy(buf, fileDescriptions[z]->func(a, b) + offset,
+			       size);
+		} else {
+			size = 0;
+		}
+
+		return size;
+	}
+
+	return -ENOENT;
 
 }
 
